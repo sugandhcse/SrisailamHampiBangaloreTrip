@@ -48,10 +48,17 @@
     background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     z-index: 0;
   }
-  .hero-bg::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  .hero-bg-img {
+    position: absolute; inset: 0; z-index: 0;
+    background: url('trip-banner.png') center center / cover no-repeat;
+    opacity: 0.22;
+  }
+  .hero-bg-overlay {
+    position: absolute; inset: 0; z-index: 0;
+    background: linear-gradient(to bottom,
+      rgba(10,8,40,0.55) 0%,
+      rgba(10,8,40,0.35) 40%,
+      rgba(10,8,40,0.75) 100%);
   }
   .stars {
     position: absolute; inset: 0; z-index: 0;
@@ -503,6 +510,8 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
+  <div class="hero-bg-img"></div>
+  <div class="hero-bg-overlay"></div>
   <div class="stars"></div>
   <div class="hero-content">
     <div class="hero-tag">✦ Same Roads · New Stories ✦</div>
@@ -914,6 +923,19 @@ let visibleItems = [];
 let selectMode = false;
 let selected = new Set();
 
+// ─── LAZY LOAD OBSERVER ──────────────────────────────────────────────────────
+const lazyObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const src = el.dataset.src;
+    if (!src) return;
+    el.src = src;
+    delete el.dataset.src;
+    lazyObserver.unobserve(el);
+  });
+}, { rootMargin: '300px 0px' });
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 function isVideo(f) { return /\.(mp4|mov|avi|mkv)$/i.test(f); }
 function isImage(f) { return /\.(jpg|jpeg|png|gif|webp|heic)$/i.test(f); }
@@ -965,7 +987,8 @@ function buildGallery() {
     if (isVid) {
       item.innerHTML = `
         ${badge}
-        <video src="${filename}" muted preload="metadata" style="width:100%;display:block;border-radius:12px;min-height:150px;background:#111"></video>
+        <video data-src="${filename}" muted preload="none"
+               style="width:100%;display:block;border-radius:12px;min-height:150px;background:#111"></video>
         <div class="video-icon">▶</div>
         <div class="photo-overlay">
           <div class="photo-meta">🎬 ${filename}<br>${meta.title}</div>
@@ -974,12 +997,14 @@ function buildGallery() {
             <button class="photo-btn" onclick="downloadFile('${filename}',event)">⬇ Save</button>
           </div>
         </div>`;
+      lazyObserver.observe(item.querySelector('video'));
     } else {
       item.innerHTML = `
         ${badge}
-        <img src="${filename}" alt="${filename}" decoding="async"
-             style="width:100%;display:block;min-height:120px;background:#16213e"
-             onerror="this.style.minHeight='80px';this.style.opacity='0.3';this.alt='⚠ Not loaded'">
+        <img data-src="${filename}" alt="${filename}"
+             src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 3'%3E%3C/svg%3E"
+             style="width:100%;display:block;min-height:120px;background:#16213e;transition:opacity 0.4s"
+             onerror="this.style.opacity='0.15'">
         <div class="photo-overlay">
           <div class="photo-meta">📸 ${formatTime(filename)}<br>${meta.title}</div>
           <div class="photo-actions">
@@ -987,6 +1012,7 @@ function buildGallery() {
             <button class="photo-btn" onclick="downloadFile('${filename}',event)">⬇ Save</button>
           </div>
         </div>`;
+      lazyObserver.observe(item.querySelector('img'));
     }
 
     item.addEventListener('click', (e) => {
