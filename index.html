@@ -661,6 +661,11 @@
   }
 
 
+  /* Dark OSM tile filter — inverts OSM light tiles to dark without API key */
+  .map-dark-tiles {
+    filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.95) saturate(0.6);
+  }
+
   /* ── MAP ── */
   .map-section { padding: 4rem 2rem; background: linear-gradient(180deg,var(--deep),#0d1b2a); }
   .map-wrap {
@@ -1593,9 +1598,10 @@ const map = L.map('route-map', {
   scrollWheelZoom: false,
 });
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '© OpenStreetMap © CARTO',
-  maxZoom: 18,
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+  maxZoom: 19,
+  className: 'map-dark-tiles',
 }).addTo(map);
 
 // Dotted route line
@@ -1868,7 +1874,8 @@ function closeNav() {
 let mapSatellite = false;
 let currentTileLayer = null;
 
-const DARK_TILES = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const DARK_TILES = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const DARK_ATTRIB = '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
 const SAT_TILES  = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 
 function toggleMapStyle() {
@@ -1876,7 +1883,11 @@ function toggleMapStyle() {
   if (currentTileLayer) map.removeLayer(currentTileLayer);
   currentTileLayer = L.tileLayer(
     mapSatellite ? SAT_TILES : DARK_TILES,
-    { attribution: mapSatellite ? '© Esri' : '© OpenStreetMap © CARTO', maxZoom: 18 }
+    {
+      attribution: mapSatellite ? '© Esri' : DARK_ATTRIB,
+      maxZoom: 19,
+      className: mapSatellite ? '' : 'map-dark-tiles',
+    }
   ).addTo(map);
   const btn = document.getElementById('mapToggleBtn');
   btn.textContent = mapSatellite ? '🗺 Street View' : '🛰 Satellite View';
