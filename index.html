@@ -682,6 +682,7 @@
     .day-card { border-radius: 12px; }
 
     /* ── MAP ── */
+    .map-section { padding: 2rem 1rem; }
     #route-map { height: 320px; }
     .map-wrap { border-radius: 12px; }
     /* Prevent map drag hijacking page scroll — show tap hint */
@@ -733,8 +734,16 @@
     .download-section { padding: 2rem 1rem; }
     .download-grid { flex-direction: column; align-items: stretch; gap: 0.5rem; }
     .dl-btn { justify-content: center; padding: 0.7rem 1rem; min-height: 44px; }
+    .highlights-section { padding: 2rem 1rem; }
     .highlights-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
     .hl-card { padding: 1rem; }
+
+    /* Override inline padding on gallery/reel section-title divs */
+    .gallery-section .section-title { padding-left: 0.8rem !important; padding-right: 0.8rem !important; }
+    .reel-section .section-title { padding-left: 1rem !important; padding-right: 1rem !important; }
+
+    /* gallery-stats side padding */
+    .gallery-stats { margin: 0 0 1rem; padding: 0 0.8rem; }
 
     /* ── FOOTER ── */
     footer { padding: 1.5rem 1rem; font-size: 0.8rem; }
