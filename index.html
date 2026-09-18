@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bangalore → Srisailam → Hampi Road Trip 2026</title>
+<style>
+  :root {
+    --gold: #f5a623;
+    --deep: #1a1a2e;
+    --card-bg: #16213e;
+    --accent: #e94560;
+    --light: #f0f0f0;
+    --muted: #8892b0;
+    --green: #2ecc71;
+    --day1: #e74c3c;
+    --day2: #e67e22;
+    --day3: #f1c40f;
+    --day4: #2ecc71;
+    --day5: #1abc9c;
+    --day6: #3498db;
+    --day7: #9b59b6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--deep);
+    color: var(--light);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 2rem;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    z-index: 0;
+  }
+  .hero-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .stars {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      radial-gradient(circle, #fff 1px, transparent 1px),
+      radial-gradient(circle, #fff 1px, transparent 1px);
+    background-size: 200px 200px, 300px 300px;
+    background-position: 0 0, 100px 100px;
+    opacity: 0.15;
+    animation: twinkle 8s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle { from { opacity: 0.1 } to { opacity: 0.25 } }
+
+  .hero-content { position: relative; z-index: 1; max-width: 900px; }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(245,166,35,0.15);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 0.4rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #fff 30%, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 span { color: var(--gold); -webkit-text-fill-color: var(--gold); }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin: 1rem 0 2rem;
+    letter-spacing: 1px;
+  }
+  .hero-stats {
+    display: flex; flex-wrap: wrap; gap: 1.5rem;
+    justify-content: center; margin-bottom: 2.5rem;
+  }
+  .stat {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    min-width: 130px;
+  }
+  .stat-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+  .stat-val { font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+  .stat-lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  .route-bar {
+    display: flex; align-items: center; gap: 0.5rem;
+    justify-content: center;
+    font-size: 1.1rem; font-weight: 600;
+    flex-wrap: wrap;
+  }
+  .route-bar .city { color: var(--gold); }
+  .route-bar .arrow { color: var(--accent); font-size: 1.3rem; }
+
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    z-index: 1; animation: bounce 2s infinite;
+    color: var(--muted); font-size: 0.85rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+  }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+  /* ── NAV ── */
+  .sticky-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(26,26,46,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0.8rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .nav-brand { font-weight: 800; color: var(--gold); font-size: 1rem; }
+  .nav-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .nav-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--light); padding: 0.4rem 1rem;
+    border-radius: 50px; cursor: pointer;
+    font-size: 0.85rem; transition: all 0.2s;
+    text-decoration: none;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--gold); color: #000; border-color: var(--gold);
+  }
+
+  /* ── ITINERARY STRIP ── */
+  .section { padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; }
+  .section-title {
+    text-align: center; margin-bottom: 3rem;
+  }
+  .section-title h2 {
+    font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 800;
+    background: linear-gradient(135deg, #fff, var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .section-title p { color: var(--muted); margin-top: 0.5rem; }
+
+  .itinerary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .day-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .day-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+  .day-header {
+    padding: 1.2rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .day-num {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 1.1rem; color: #fff; flex-shrink: 0;
+  }
+  .day-info { flex: 1; }
+  .day-info .date { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .day-info .route { font-weight: 700; font-size: 0.95rem; color: #fff; line-height: 1.3; }
+  .day-body { padding: 0 1.5rem 1.5rem; }
+  .day-highlight {
+    font-size: 0.85rem; color: var(--muted); margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .day-places { list-style: none; }
+  .day-places li {
+    font-size: 0.85rem; color: rgba(255,255,255,0.7);
+    padding: 0.2rem 0;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .day-places li::before { content: '→'; color: var(--gold); }
+  .day-footer {
+    background: rgba(0,0,0,0.2);
+    padding: 0.8rem 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.8rem;
+  }
+  .day-footer span { color: var(--muted); }
+  .day-footer a {
+    color: var(--gold); text-decoration: none; font-weight: 600;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .day-footer a:hover { color: #fff; }
+
+  /* ── GALLERY ── */
+  .gallery-section { padding: 4rem 0; }
+  .gallery-controls {
+    display: flex; flex-wrap: wrap; gap: 1rem;
+    align-items: center; justify-content: space-between;
+    padding: 0 2rem; margin-bottom: 2rem; max-width: 1400px; margin-left: auto; margin-right: auto;
+  }
+  .filter-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .pill {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--light); padding: 0.5rem 1.2rem;
+    border-radius: 50px; cursor: pointer;
+    font-size: 0.85rem; transition: all 0.2s;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .pill:hover { border-color: var(--gold); color: var(--gold); }
+  .pill.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 700; }
+  .pill .count {
+    background: rgba(0,0,0,0.2);
+    border-radius: 50px; padding: 0 0.5rem;
+    font-size: 0.75rem;
+  }
+  .pill.active .count { background: rgba(0,0,0,0.3); }
+
+  .gallery-actions { display: flex; gap: 0.8rem; align-items: center; }
+  .action-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--light); padding: 0.5rem 1rem;
+    border-radius: 8px; cursor: pointer;
+    font-size: 0.85rem; transition: all 0.2s;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .action-btn:hover { background: var(--accent); border-color: var(--accent); }
+  .action-btn.primary { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 700; }
+  .action-btn.primary:hover { background: #e09412; }
+
+  .gallery-stats {
+    text-align: center; color: var(--muted); font-size: 0.85rem;
+    margin: 0 2rem 1.5rem; max-width: 1400px; margin-left: auto; margin-right: auto;
+    padding: 0 2rem;
+  }
+  #photo-count { color: var(--gold); font-weight: 700; }
+
+  .masonry {
+    column-count: 4;
+    column-gap: 1rem;
+    padding: 0 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1200px) { .masonry { column-count: 3; } }
+  @media (max-width: 800px) { .masonry { column-count: 2; } }
+  @media (max-width: 500px) { .masonry { column-count: 1; } }
+
+  .photo-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--card-bg);
+    transition: transform 0.3s;
+  }
+  .photo-item:hover { transform: scale(1.02); z-index: 2; }
+  .photo-item img {
+    width: 100%; display: block;
+    transition: transform 0.4s;
+  }
+  .photo-item:hover img { transform: scale(1.05); }
+  .photo-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.3s;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 1rem;
+  }
+  .photo-item:hover .photo-overlay { opacity: 1; }
+  .photo-meta { font-size: 0.8rem; color: rgba(255,255,255,0.9); }
+  .photo-actions {
+    display: flex; gap: 0.5rem; margin-top: 0.5rem;
+  }
+  .photo-btn {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; border-radius: 6px;
+    padding: 0.3rem 0.6rem; font-size: 0.8rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .photo-btn:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+  .day-badge {
+    position: absolute; top: 0.7rem; left: 0.7rem;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+    border-radius: 50px; padding: 0.2rem 0.7rem;
+    font-size: 0.72rem; font-weight: 700; color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .video-icon {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px; height: 56px;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; pointer-events: none;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: all 0.3s;
+  }
+  .photo-item:hover .video-icon { background: var(--accent); border-color: var(--accent); }
+
+  .hidden { display: none !important; }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.96);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .lightbox.open { opacity: 1; pointer-events: all; }
+  .lb-content {
+    position: relative; max-width: 92vw; max-height: 90vh;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .lb-media-wrap {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    max-width: 90vw; max-height: 80vh;
+  }
+  .lb-img {
+    max-width: 90vw; max-height: 78vh;
+    border-radius: 8px; object-fit: contain;
+    box-shadow: 0 0 80px rgba(0,0,0,0.8);
+  }
+  .lb-video {
+    max-width: 90vw; max-height: 78vh;
+    border-radius: 8px;
+  }
+  .lb-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; padding: 1rem 0 0;
+    gap: 1rem;
+  }
+  .lb-info { flex: 1; }
+  .lb-filename { font-size: 0.9rem; color: rgba(255,255,255,0.8); }
+  .lb-daytag { font-size: 0.78rem; color: var(--gold); font-weight: 700; }
+  .lb-btns { display: flex; gap: 0.6rem; }
+  .lb-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; border-radius: 8px;
+    padding: 0.5rem 1rem; cursor: pointer;
+    font-size: 0.85rem; transition: all 0.2s;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .lb-btn:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+  .lb-close {
+    position: fixed; top: 1.5rem; right: 1.5rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; width: 44px; height: 44px;
+    border-radius: 50%; cursor: pointer; font-size: 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; z-index: 10;
+  }
+  .lb-close:hover { background: var(--accent); border-color: var(--accent); }
+  .lb-nav {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; width: 48px; height: 80px;
+    border-radius: 8px; cursor: pointer; font-size: 1.5rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; z-index: 10;
+  }
+  .lb-nav:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+  .lb-prev { left: 1rem; }
+  .lb-next { right: 1rem; }
+  .lb-counter {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+    border-radius: 50px; padding: 0.4rem 1.2rem;
+    font-size: 0.85rem; color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  /* ── DOWNLOAD ALL ── */
+  .download-section {
+    padding: 3rem 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(245,166,35,0.08), rgba(233,69,96,0.08));
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .download-section h3 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .download-section p { color: var(--muted); margin-bottom: 1.5rem; }
+  .download-grid {
+    display: flex; flex-wrap: wrap; gap: 0.8rem;
+    justify-content: center; max-width: 800px; margin: 0 auto;
+  }
+  .dl-btn {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff; padding: 0.6rem 1.4rem;
+    border-radius: 50px; cursor: pointer;
+    font-size: 0.85rem; transition: all 0.2s;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .dl-btn:hover { background: var(--gold); color: #000; border-color: var(--gold); transform: translateY(-2px); }
+  .dl-btn.all { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 700; }
+  .dl-btn.all:hover { background: #e09412; }
+
+  /* ── HIGHLIGHTS ── */
+  .highlights-section { padding: 4rem 2rem; }
+  .highlights-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem; max-width: 1200px; margin: 0 auto;
+  }
+  .hl-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px; padding: 1.5rem;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .hl-card:hover { transform: translateY(-4px); border-color: var(--gold); }
+  .hl-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+  .hl-card h4 { font-weight: 700; margin-bottom: 0.4rem; color: var(--gold); }
+  .hl-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 2.5rem 2rem;
+    color: var(--muted); font-size: 0.85rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  footer strong { color: var(--gold); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .gallery-controls { flex-direction: column; align-items: flex-start; }
+    .lb-nav { display: none; }
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    height: 3px; background: var(--gold);
+    width: 0; transition: width 0.1s;
+  }
+
+  /* Scroll animation */
+  .fade-in {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* Selection checkbox */
+  .photo-item.selected::after {
+    content: '✓';
+    position: absolute; top: 0.5rem; right: 0.5rem;
+    width: 28px; height: 28px;
+    background: var(--green); color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; font-weight: 700;
+    z-index: 5;
+    line-height: 28px; text-align: center;
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, var(--card-bg) 25%, rgba(255,255,255,0.05) 50%, var(--card-bg) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 12px;
+    min-height: 200px;
+    margin-bottom: 1rem;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="stars"></div>
+  <div class="hero-content">
+    <div class="hero-tag">✦ Same Roads · New Stories ✦</div>
+    <h1>Bangalore → Srisailam<br><span>→ Hampi</span></h1>
+    <p class="hero-sub">Road Trip 2026 &nbsp;|&nbsp; Temples · Nature · Heritage · Scenic Drives</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-icon">📅</div>
+        <div class="stat-val">7</div>
+        <div class="stat-lbl">Days</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">👥</div>
+        <div class="stat-val">3</div>
+        <div class="stat-lbl">People</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🚗</div>
+        <div class="stat-val">~1,450</div>
+        <div class="stat-lbl">km total</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">📸</div>
+        <div class="stat-val" id="heroPhotoCount">—</div>
+        <div class="stat-lbl">Photos + Videos</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🏛️</div>
+        <div class="stat-val">12+</div>
+        <div class="stat-lbl">Sites visited</div>
+      </div>
+    </div>
+    <div class="route-bar">
+      <span class="city">Bangalore</span>
+      <span class="arrow">→</span>
+      <span class="city">Lepakshi</span>
+      <span class="arrow">→</span>
+      <span class="city">Gandikota</span>
+      <span class="arrow">→</span>
+      <span class="city">Belum</span>
+      <span class="arrow">→</span>
+      <span class="city">Yaganti</span>
+      <span class="arrow">→</span>
+      <span class="city">Mahanandi</span>
+      <span class="arrow">→</span>
+      <span class="city">Ahobilam</span>
+      <span class="arrow">→</span>
+      <span class="city">Srisailam</span>
+      <span class="arrow">→</span>
+      <span class="city">Hampi</span>
+      <span class="arrow">→</span>
+      <span class="city">Mandragiri</span>
+      <span class="arrow">→</span>
+      <span class="city">Bangalore</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll to explore</span>
+    <span>↓</span>
+  </div>
+</section>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav">
+  <div class="nav-brand">🗺️ BLR → SRS → HMP</div>
+  <div class="nav-links">
+    <a class="nav-btn" href="#itinerary">Itinerary</a>
+    <a class="nav-btn" href="#gallery">Gallery</a>
+    <a class="nav-btn" href="#highlights">Highlights</a>
+    <a class="nav-btn" href="#download">Download</a>
+  </div>
+</nav>
+
+<!-- ITINERARY -->
+<section id="itinerary">
+  <div class="section">
+    <div class="section-title fade-in">
+      <h2>Day-by-Day Itinerary</h2>
+      <p>7 days of temples, caves, gorges, heritage and unforgettable sunsets</p>
+    </div>
+    <div class="itinerary-grid">
+
+      <div class="day-card fade-in">
+        <div class="day-header" style="background:linear-gradient(135deg,rgba(231,76,60,0.25),transparent)">
+          <div class="day-num" style="background:var(--day1)">1</div>
+          <div class="day-info">
+            <div class="date">Sep 12, 2026</div>
+            <div class="route">Bangalore → Lepakshi → Gandikota</div>
+          </div>
+        </div>
+        <div class="day-body">
+          <div class="day-highlight">🚗 ~400 km &nbsp;|&nbsp; 8–9 hrs &nbsp;|&nbsp; Stay: Gandikota</div>
+          <ul class="day-places">
+            <li>Lepakshi Temple (Vijayanagara architecture)</li>
+            <li>Hanging Pillar & Giant Nandi</li>
+            <li>Gandikota Fort & Pennar Gorge</li>
+          </ul>
+        </div>
+        <div class="day-footer">
+          <span id="cnt-20260912">— photos</span>
+          <a href="#gallery" onclick="filterDay('20260912')">View photos →</a>
+        </div>
+      </div>
+
+      <div class="day-card fade-in">
+        <div class="day-header" style="background:linear-gradient(135deg,rgba(230,126,34,0.25),transparent)">
+          <div class="day-num" style="background:var(--day2)">2</div>
+          <div class="day-info">
+            <div class="date">Sep 13, 2026</div>
+            <div class="route">Gandikota → Belum → Yaganti → Mahanandi</div>
+          </div>
+        </div>
+        <div class="day-body">
+          <div class="day-highlight">🚗 ~220 km &nbsp;|&nbsp; 5–6 hrs &nbsp;|&nbsp; Stay: Mahanandi</div>
+          <ul class="day-places">
+            <li>Belum Caves (underground formations)</li>
+            <li>Yaganti Temple (serene & peaceful)</li>
+            <li>Mahanandi Temple & nature</li>
+          </ul>
+        </div>
+        <div class="day-footer">
+          <span id="cnt-20260913">— photos</span>
+          <a href="#gallery" onclick="filterDay('20260913')">View photos →</a>
+        </div>
+      </div>
+
+      <div class="day-card fade-in">
+        <div class="day-header" style="background:linear-gradient(135deg,rgba(241,196,15,0.2),transparent)">
+          <div class="day-num" style="background:var(--day3)">3</div>
+          <div class="day-info">
+            <div class="date">Sep 14, 2026</div>
+            <div class="route">Mahanandi → Ahobilam → Srisailam</div>
+          </div>
+        </div>
+        <div class="day-body">
+          <div class="day-highlight">🚗 ~250 km &nbsp;|&nbsp; 6–7 hrs &nbsp;|&nbsp; Stay: Srisailam</div>
+          <ul class="day-places">
+            <li>Mahanandi Temple</li>
+            <li>Ahobilam (sacred temples)</li>
+            <li>Srisailam Temple (arrival)</li>
+          </ul>
+        </div>
+        <div class="day-footer">
+          <span id="cnt-20260914">— photos</span>
+          <a href="#gallery" onclick="filterDay('20260914')">View photos →</a>
+        </div>
+      </div>
+
+      <div class="day-card fade-in">
+        <div class="day-header" style="background:linear-gradient(135deg,rgba(46,204,113,0.2),transparent)">
+          <div class="day-num" style="background:var(--day4)">4</div>
+          <div class="day-info">
+            <div class="date">Sep 15, 2026</div>
+            <div class="route">Srisailam Local Sightseeing</div>
+          </div>
+        </div>
+        <div class="day-body">
+          <div class="day-highlight">🚶 Local travel &nbsp;|&nbsp; Stay: Srisailam</div>
+          <ul class="day-places">
+            <li>Mallikarjuna Temple (Jyotirlinga)</li>
+            <li>Bhramaramba Temple</li>
+            <li>Sakshi Ganapathi & Pathala Ganga</li>
+            <li>Srisailam Dam & sightseeing</li>
+          </ul>
+        </div>
+        <div class="day-footer">
+          <span id="cnt-20260915">— photos</span>
+          <a href="#gallery" onclick="filterDay('20260915')">View photos →</a>
+        </div>
+      </div>
+
+      <div class="day-card fade-in">
+        <div class="day-header" style="background:linear-gradient(135deg,rgba(26,188,156,0.2),transparent)">
+          <div class="day-num" style="background:var(--day5)">5</div>
+          <div class="day-info">
+            <div class="date">Sep 16, 2026</div>
+            <div class="route">Srisailam → Hampi</div>
+          </div>
+        </div>
+        <div class="day-body">
+          <div class="day-highlight">🚗 ~320 km &nbsp;|&nbsp; 7–8 hrs &nbsp;|&nbsp; Stay: Hampi</div>
+          <ul class="day-places">
+            <li>Scenic drive through forests</li>
+            <li>Arrival at Hampi</li>
+            <li>Hampi sunset view</li>
+          </ul>
+        </div>
+        <div class="day-footer">
+          <span id="cnt-20260916">— photos</span>
+          <a href="#gallery" onclick="filterDay('20260916')">View photos →</a>
+        </div>
+      </div>
+
+      <div class="day-card fade-in">
+        <div class="day-header" style="background:linear-gradient(135deg,rgba(52,152,219,0.2),transparent)">
+          <div class="day-num" style="background:var(--day6)">6</div>
+          <div class="day-info">
+            <div class="date">Sep 17, 2026</div>
+            <div class="route">Hampi Sightseeing</div>
+          </div>
+        </div>
+        <div class="day-body">
+          <div class="day-highlight">🚶 Local travel &nbsp;|&nbsp; Stay: Hampi</div>
+          <ul class="day-places">
+            <li>Virupaksha Temple</li>
+            <li>Vittala Temple & Stone Chariot</li>
+            <li>Royal Enclosure</li>
+            <li>Hampi ruins & archaeological sites</li>
+          </ul>
+        </div>
+        <div class="day-footer">
+          <span id="cnt-20260917">— photos</span>
+          <a href="#gallery" onclick="filterDay('20260917')">View photos →</a>
+        </div>
+      </div>
+
+      <div class="day-card fade-in">
+        <div class="day-header" style="background:linear-gradient(135deg,rgba(155,89,182,0.2),transparent)">
+          <div class="day-num" style="background:var(--day7)">7</div>
+          <div class="day-info">
+            <div class="date">Sep 18, 2026</div>
+            <div class="route">Hampi → Mandragiri Betta → Bangalore</div>
+          </div>
+        </div>
+        <div class="day-body">
+          <div class="day-highlight">🚗 ~400 km &nbsp;|&nbsp; 8–9 hrs &nbsp;|&nbsp; Reach BLR (Night)</div>
+          <ul class="day-places">
+            <li>Mandragiri Betta (Tumkur)</li>
+            <li>Return to Bangalore</li>
+          </ul>
+        </div>
+        <div class="day-footer">
+          <span id="cnt-20260918">— photos</span>
+          <a href="#gallery" onclick="filterDay('20260918')">View photos →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="gallery-section">
+  <div class="section-title fade-in" style="padding:0 2rem;max-width:1400px;margin:0 auto 2rem;">
+    <h2>Photo Gallery</h2>
+    <p>Every moment captured — sorted by day, searchable by location</p>
+  </div>
+
+  <div class="gallery-controls fade-in">
+    <div class="filter-pills" id="filterPills">
+      <button class="pill active" onclick="filterDay('all')" data-day="all">
+        📸 All <span class="count" id="cnt-all">—</span>
+      </button>
+      <button class="pill" onclick="filterDay('20260912')" data-day="20260912">
+        <span style="color:var(--day1)">●</span> Day 1 · BLR→Gandikota <span class="count" id="pill-20260912">—</span>
+      </button>
+      <button class="pill" onclick="filterDay('20260913')" data-day="20260913">
+        <span style="color:var(--day2)">●</span> Day 2 · Belum→Mahanandi <span class="count" id="pill-20260913">—</span>
+      </button>
+      <button class="pill" onclick="filterDay('20260914')" data-day="20260914">
+        <span style="color:var(--day3)">●</span> Day 3 · Ahobilam→Srisailam <span class="count" id="pill-20260914">—</span>
+      </button>
+      <button class="pill" onclick="filterDay('20260915')" data-day="20260915">
+        <span style="color:var(--day4)">●</span> Day 4 · Srisailam <span class="count" id="pill-20260915">—</span>
+      </button>
+      <button class="pill" onclick="filterDay('20260916')" data-day="20260916">
+        <span style="color:var(--day5)">●</span> Day 5 · → Hampi <span class="count" id="pill-20260916">—</span>
+      </button>
+      <button class="pill" onclick="filterDay('20260917')" data-day="20260917">
+        <span style="color:var(--day6)">●</span> Day 6 · Hampi Sights <span class="count" id="pill-20260917">—</span>
+      </button>
+      <button class="pill" onclick="filterDay('20260918')" data-day="20260918">
+        <span style="color:var(--day7)">●</span> Day 7 · → Bangalore <span class="count" id="pill-20260918">—</span>
+      </button>
+    </div>
+    <div class="gallery-actions">
+      <button class="action-btn" onclick="toggleSelectMode()" id="selectBtn">☐ Select</button>
+      <button class="action-btn primary hidden" onclick="downloadSelected()" id="downloadSelBtn">⬇ Download Selected</button>
+    </div>
+  </div>
+
+  <div class="gallery-stats">
+    Showing <span id="photo-count">0</span> items
+    <span id="selected-info" class="hidden"> · <span id="selected-count">0</span> selected</span>
+  </div>
+
+  <div class="masonry" id="gallery"></div>
+</section>
+
+<!-- DOWNLOAD ALL -->
+<section id="download" class="download-section fade-in">
+  <h3>⬇ Download by Day</h3>
+  <p>Select and download all photos from a specific day of the trip</p>
+  <div class="download-grid" id="downloadGrid">
+    <button class="dl-btn all" onclick="downloadAll()">⬇ Download All Photos</button>
+    <button class="dl-btn" onclick="downloadDay('20260912')">📅 Day 1 · Sep 12</button>
+    <button class="dl-btn" onclick="downloadDay('20260913')">📅 Day 2 · Sep 13</button>
+    <button class="dl-btn" onclick="downloadDay('20260914')">📅 Day 3 · Sep 14</button>
+    <button class="dl-btn" onclick="downloadDay('20260915')">📅 Day 4 · Sep 15</button>
+    <button class="dl-btn" onclick="downloadDay('20260916')">📅 Day 5 · Sep 16</button>
+    <button class="dl-btn" onclick="downloadDay('20260917')">📅 Day 6 · Sep 17</button>
+    <button class="dl-btn" onclick="downloadDay('20260918')">📅 Day 7 · Sep 18</button>
+  </div>
+</section>
+
+<!-- HIGHLIGHTS -->
+<section id="highlights" class="highlights-section">
+  <div class="section-title fade-in">
+    <h2>Trip Highlights</h2>
+    <p>What made this journey unforgettable</p>
+  </div>
+  <div class="highlights-grid">
+    <div class="hl-card fade-in">
+      <div class="hl-icon">🏛️</div>
+      <h4>Lepakshi</h4>
+      <p>Stunning 16th-century Vijayanagara temple with a hanging pillar that defies gravity and a giant Nandi bull.</p>
+    </div>
+    <div class="hl-card fade-in">
+      <div class="hl-icon">🏔️</div>
+      <h4>Gandikota</h4>
+      <p>India's Grand Canyon — a stunning gorge carved by the Pennar River, best seen at golden hour.</p>
+    </div>
+    <div class="hl-card fade-in">
+      <div class="hl-icon">🦇</div>
+      <h4>Belum Caves</h4>
+      <p>Second-longest natural cave system in the Indian subcontinent with dramatic underground formations.</p>
+    </div>
+    <div class="hl-card fade-in">
+      <div class="hl-icon">🙏</div>
+      <h4>Yaganti</h4>
+      <p>A tranquil cave temple dedicated to Lord Shiva, surrounded by serene hills and cool springs.</p>
+    </div>
+    <div class="hl-card fade-in">
+      <div class="hl-icon">⚡</div>
+      <h4>Srisailam</h4>
+      <p>Mallikarjuna Jyotirlinga — one of the 12 sacred shrines of Lord Shiva. Set by the Krishna river.</p>
+    </div>
+    <div class="hl-card fade-in">
+      <div class="hl-icon">🌅</div>
+      <h4>Hampi</h4>
+      <p>UNESCO World Heritage Site. Ancient ruins of the Vijayanagara Empire amid dramatic boulder landscapes.</p>
+    </div>
+    <div class="hl-card fade-in">
+      <div class="hl-icon">🚗</div>
+      <h4>Mahindra XUV 300</h4>
+      <p>Our trusty black steed for 1,450 km of highways, forest roads and ghats — not a single breakdown!</p>
+    </div>
+    <div class="hl-card fade-in">
+      <div class="hl-icon">👨‍👩‍👧‍👦</div>
+      <h4>3 People</h4>
+      <p>Good vibes, great roads — three friends, one car, countless memories across Karnataka & Andhra Pradesh.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>Bangalore → Srisailam → Hampi Road Trip 2026</strong></p>
+  <p style="margin-top:0.5rem">Sep 12–18, 2026 &nbsp;·&nbsp; 7 Days / 6 Nights &nbsp;·&nbsp; 3 People &nbsp;·&nbsp; ~1,450 km</p>
+  <p style="margin-top:0.5rem">Good Vibes, Great Roads, Unforgettable Memories! 🚗✨</p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightboxOnBg(event)">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+  <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+  <div class="lb-content">
+    <div class="lb-media-wrap" id="lbMediaWrap"></div>
+    <div class="lb-bar">
+      <div class="lb-info">
+        <div class="lb-daytag" id="lbDayTag"></div>
+        <div class="lb-filename" id="lbFilename"></div>
+      </div>
+      <div class="lb-btns">
+        <button class="lb-btn" onclick="downloadCurrent()">⬇ Download</button>
+        <button class="lb-btn" onclick="lbNav(-1)">‹ Prev</button>
+        <button class="lb-btn" onclick="lbNav(1)">Next ›</button>
+      </div>
+    </div>
+  </div>
+  <div class="lb-counter" id="lbCounter">1 / 1</div>
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const DAY_META = {
+  '20260912': { label:'Day 1', title:'BLR → Lepakshi → Gandikota', color:'#e74c3c' },
+  '20260913': { label:'Day 2', title:'Gandikota → Belum → Yaganti → Mahanandi', color:'#e67e22' },
+  '20260914': { label:'Day 3', title:'Mahanandi → Ahobilam → Srisailam', color:'#f1c40f' },
+  '20260915': { label:'Day 4', title:'Srisailam Sightseeing', color:'#2ecc71' },
+  '20260916': { label:'Day 5', title:'Srisailam → Hampi', color:'#1abc9c' },
+  '20260917': { label:'Day 6', title:'Hampi Sightseeing', color:'#3498db' },
+  '20260918': { label:'Day 7', title:'Hampi → Mandragiri → Bangalore', color:'#9b59b6' },
+};
+
+// Generate file list from known filenames
+const ALL_FILES = [];
+
+// We'll dynamically load these — injected by the server or listed statically.
+// Since this is a local HTML file, we list them statically below.
+const FILE_LIST = ["20260912_034555833_iOS.jpg", "20260912_034620799_iOS.jpg", "20260912_034642565_iOS.jpg", "20260912_034704756_iOS.jpg", "20260912_034730073_iOS.jpg", "20260912_035515265_iOS.jpg", "20260912_035620713_iOS.jpg", "20260912_035629706_iOS.jpg", "20260912_035635581_iOS.jpg", "20260912_035647467_iOS.jpg", "20260912_050446361_iOS.jpg", "20260912_050505182_iOS.jpg", "20260912_050518424_iOS.jpg", "20260912_050538993_iOS.jpg", "20260912_050626555_iOS.jpg", "20260912_050819301_iOS.jpg", "20260912_050848759_iOS.jpg", "20260912_110031365_iOS.jpg", "20260912_114056226_iOS.jpg", "20260912_114207350_iOS.jpg", "20260912_114225221_iOS.jpg", "20260912_114303595_iOS.jpg", "20260912_114314473_iOS.jpg", "20260912_114336576_iOS.jpg", "20260912_114342303_iOS.jpg", "20260912_114402625_iOS.jpg", "20260912_114405037_iOS.jpg", "20260912_114406240_iOS.jpg", "20260912_114443698_iOS.jpg", "20260912_114516433_iOS.jpg", "20260912_114637316_iOS.jpg", "20260912_114638805_iOS.jpg", "20260912_114718000_iOS.MP4", "20260912_115008330_iOS.jpg", "20260912_115348000_iOS.MP4", "20260912_115751706_iOS.jpg", "20260912_115830000_iOS.MP4", "20260912_115949698_iOS.jpg", "20260912_120005708_iOS.jpg", "20260912_120018484_iOS.jpg", "20260912_120037984_iOS.jpg", "20260913_043135334_iOS.jpg", "20260913_043223120_iOS.jpg", "20260913_043233380_iOS.jpg", "20260913_043258182_iOS.jpg", "20260913_043302410_iOS.jpg", "20260913_043326594_iOS.jpg", "20260913_043408224_iOS.jpg", "20260913_043435337_iOS.jpg", "20260913_043450200_iOS.jpg", "20260913_044815183_iOS.jpg", "20260913_044950000_iOS.png", "20260913_045004000_iOS.png", "20260913_045406058_iOS.jpg", "20260913_045416605_iOS.jpg", "20260913_045431000_iOS.MP4", "20260913_045451969_iOS.jpg", "20260913_045622633_iOS.jpg", "20260913_045637293_iOS.jpg", "20260913_050200000_iOS.MP4", "20260913_050215000_iOS.MP4", "20260913_050239067_iOS.jpg", "20260913_050247000_iOS.MP4", "20260913_050521061_iOS.jpg", "20260913_050531776_iOS.jpg", "20260913_053124936_iOS.jpg", "20260913_053204297_iOS.jpg", "20260913_053244000_iOS.MP4", "20260913_054605000_iOS.MP4", "20260913_073930446_iOS.jpg", "20260913_073936109_iOS.jpg", "20260913_074044765_iOS.jpg", "20260913_074056116_iOS.jpg", "20260913_074110186_iOS.jpg", "20260913_074126992_iOS.jpg", "20260913_074723000_iOS.MP4", "20260913_075336643_iOS.jpg", "20260913_080434000_iOS.MP4", "20260913_080500000_iOS.MP4", "20260913_102726786_iOS.jpg", "20260913_115238000_iOS.MP4", "20260913_115244000_iOS.MP4", "20260913_115447769_iOS.jpg", "20260913_115452920_iOS.jpg", "20260913_115608480_iOS.jpg", "20260913_115903598_iOS.jpg", "20260913_115916617_iOS.jpg", "20260913_120006987_iOS.jpg", "20260913_121000362_iOS.jpg", "20260913_121550145_iOS.jpg", "20260913_121605891_iOS.jpg", "20260913_121613002_iOS.jpg", "20260913_121626846_iOS.jpg", "20260913_121635719_iOS.jpg", "20260913_121646115_iOS.jpg", "20260913_121653640_iOS.jpg", "20260913_121707422_iOS.jpg", "20260913_121716268_iOS.jpg", "20260913_121730359_iOS.jpg", "20260913_121738330_iOS.jpg", "20260913_121748592_iOS.jpg", "20260913_121758147_iOS.jpg", "20260913_121810726_iOS.jpg", "20260913_121818908_iOS.jpg", "20260913_121830583_iOS.jpg", "20260913_121838742_iOS.jpg", "20260913_121857424_iOS.jpg", "20260913_122002974_iOS.jpg", "20260913_122011599_iOS.jpg", "20260913_122058379_iOS.jpg", "20260913_122106452_iOS.jpg", "20260913_122622162_iOS.jpg", "20260913_122631948_iOS.jpg", "20260913_122642925_iOS.jpg", "20260913_122739783_iOS.jpg", "20260913_123813000_iOS.MP4", "20260914_015518911_iOS.jpg", "20260914_024051167_iOS.jpg", "20260914_044851157_iOS.jpg", "20260914_044931544_iOS.jpg", "20260914_045017080_iOS.jpg", "20260914_045029770_iOS.jpg", "20260914_045116581_iOS.jpg", "20260914_050206679_iOS.jpg", "20260914_051652471_iOS.jpg", "20260914_124641000_iOS.png", "20260914_153245000_iOS.png", "20260915_011939158_iOS.jpg", "20260915_011942489_iOS.jpg", "20260915_012011820_iOS.jpg", "20260915_012014088_iOS.jpg", "20260915_013708823_iOS.jpg", "20260915_013718296_iOS.jpg", "20260915_013747370_iOS.jpg", "20260915_013808587_iOS.jpg", "20260915_021737467_iOS.jpg", "20260915_021755282_iOS.jpg", "20260915_021850433_iOS.jpg", "20260915_111722000_iOS.MP4", "20260915_111750000_iOS.MP4", "20260915_124311393_iOS.jpg", "20260915_124313484_iOS.jpg", "20260915_124333566_iOS.jpg", "20260915_124414501_iOS.jpg", "20260915_124423395_iOS.jpg", "20260915_124441518_iOS.jpg", "20260915_124445263_iOS.jpg", "20260915_124448670_iOS.jpg", "20260915_124559408_iOS.jpg", "20260915_124651048_iOS.jpg", "20260915_124713310_iOS.jpg", "20260915_124740538_iOS.jpg", "20260915_124746218_iOS.jpg", "20260915_124753970_iOS.jpg", "20260915_124825617_iOS.jpg", "20260915_124847532_iOS.jpg", "20260915_124929387_iOS.jpg", "20260915_124938392_iOS.jpg", "20260916_110838000_iOS.png", "20260916_122733963_iOS.jpg", "20260916_122821669_iOS.jpg", "20260916_122834360_iOS.jpg", "20260916_124432000_iOS.MP4", "20260916_124452726_iOS.jpg", "20260916_124533907_iOS.jpg", "20260916_124549450_iOS.jpg", "20260916_124558808_iOS.jpg", "20260916_124603927_iOS.jpg", "20260916_124652676_iOS.jpg", "20260916_124757187_iOS.jpg", "20260916_124823905_iOS.jpg", "20260916_124839421_iOS.jpg", "20260916_132357216_iOS.jpg", "20260916_132616351_iOS.jpg", "20260917_024010454_iOS.jpg", "20260917_024116838_iOS.jpg", "20260917_024129580_iOS.jpg", "20260917_024144030_iOS.jpg", "20260917_024206712_iOS.jpg", "20260917_024238195_iOS.jpg", "20260917_024250139_iOS.jpg", "20260917_025407585_iOS.jpg", "20260917_025420000_iOS.MP4", "20260917_025458458_iOS.jpg", "20260917_025507963_iOS.jpg", "20260917_030108092_iOS.jpg", "20260917_030149686_iOS.jpg", "20260917_030205616_iOS.jpg", "20260917_030235211_iOS.jpg", "20260917_030326052_iOS.jpg", "20260917_030338471_iOS.jpg", "20260917_030355190_iOS.jpg", "20260917_030407657_iOS.jpg", "20260917_030451355_iOS.jpg", "20260917_030508273_iOS.jpg", "20260917_030523265_iOS.jpg", "20260917_032127000_iOS.MP4", "20260917_032159000_iOS.MP4", "20260917_032237000_iOS.MP4", "20260917_032551000_iOS.MP4", "20260917_032800000_iOS.MP4", "20260917_032908203_iOS.jpg", "20260917_033504216_iOS.jpg", "20260917_033530757_iOS.jpg", "20260917_033556003_iOS.jpg", "20260917_033644658_iOS.jpg", "20260917_033655983_iOS.jpg", "20260917_033706240_iOS.jpg", "20260917_033716578_iOS.jpg", "20260917_033724321_iOS.jpg", "20260917_033737394_iOS.jpg", "20260917_033750451_iOS.jpg", "20260917_034225442_iOS.jpg", "20260917_034237227_iOS.jpg", "20260917_034344066_iOS.jpg", "20260917_034530122_iOS.jpg", "20260917_034958065_iOS.jpg", "20260917_035014164_iOS.jpg", "20260917_035024244_iOS.jpg", "20260917_040313765_iOS.jpg", "20260917_040334935_iOS.jpg", "20260917_040357914_iOS.jpg", "20260917_040431552_iOS.jpg", "20260917_041314974_iOS.jpg", "20260917_041331920_iOS.jpg", "20260917_041357000_iOS.MP4", "20260917_041427249_iOS.jpg", "20260917_041459586_iOS.jpg", "20260917_041514897_iOS.jpg", "20260917_072355168_iOS.jpg", "20260917_072432862_iOS.jpg", "20260917_072443578_iOS.jpg", "20260917_072508363_iOS.jpg", "20260917_072511334_iOS.jpg", "20260917_072604294_iOS.jpg", "20260917_072616224_iOS.jpg", "20260917_104248684_iOS.jpg", "20260917_105146697_iOS.jpg", "20260917_124101520_iOS.jpg", "20260917_124116484_iOS.jpg", "20260917_124154967_iOS.jpg", "20260917_124206858_iOS.jpg", "20260917_124227220_iOS.jpg", "20260917_124242089_iOS.jpg", "20260917_124331752_iOS.jpg", "20260917_124339000_iOS.MP4", "20260917_124409000_iOS.MP4", "20260917_125107000_iOS.MOV", "20260917_125137000_iOS.MOV", "20260917_125513771_iOS.jpg", "20260917_125559084_iOS.jpg", "20260917_125801000_iOS.MP4", "20260917_125837051_iOS.jpg", "20260917_130522108_iOS.jpg", "20260917_130535805_iOS.jpg", "20260917_130550207_iOS.jpg", "20260917_152131606_iOS.jpg", "20260918_033527000_iOS.png", "20260918_085601794_iOS.jpg", "20260918_085623369_iOS.jpg", "20260918_085640058_iOS.jpg", "20260918_085701530_iOS.jpg", "20260918_085711481_iOS.jpg", "20260918_085716000_iOS.MP4", "20260918_085725000_iOS.MP4", "20260918_090103000_iOS.MP4", "20260918_090241267_iOS.jpg", "20260918_090250637_iOS.jpg", "20260918_090301739_iOS.jpg", "20260918_090313501_iOS.jpg", "20260918_092235655_iOS.jpg", "20260918_092247865_iOS.jpg", "20260918_092300371_iOS.jpg", "20260918_092344759_iOS.jpg", "20260918_092511963_iOS.jpg", "20260918_092658312_iOS.jpg", "20260918_092716603_iOS.jpg", "20260918_092727950_iOS.jpg", "20260918_092741876_iOS.jpg"];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentFilter = 'all';
+let currentLbIndex = 0;
+let visibleItems = [];
+let selectMode = false;
+let selected = new Set();
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function isVideo(f) { return /\.(mp4|mov|avi|mkv)$/i.test(f); }
+function isImage(f) { return /\.(jpg|jpeg|png|gif|webp|heic)$/i.test(f); }
+function getDay(f) { return f.substring(0,8); }
+function formatTime(f) {
+  const t = f.substring(9,15);
+  return `${t.substring(0,2)}:${t.substring(2,4)}:${t.substring(4,6)}`;
+}
+function getDayMeta(d) {
+  return DAY_META[d] || { label:'Day ?', title:'Unknown', color:'#888' };
+}
+
+function buildGallery() {
+  const container = document.getElementById('gallery');
+  container.innerHTML = '';
+
+  // Count per day
+  const counts = {};
+  FILE_LIST.forEach(f => {
+    const d = getDay(f);
+    counts[d] = (counts[d]||0)+1;
+  });
+
+  // Update counters
+  let total = FILE_LIST.length;
+  document.getElementById('heroPhotoCount').textContent = total;
+  document.getElementById('cnt-all').textContent = total;
+  Object.entries(counts).forEach(([d,c]) => {
+    const el = document.getElementById(`pill-${d}`);
+    if (el) el.textContent = c;
+    const cnt = document.getElementById(`cnt-${d}`);
+    if (cnt) cnt.textContent = `${c} photos`;
+  });
+
+  // Build items
+  FILE_LIST.forEach((filename, idx) => {
+    const day = getDay(filename);
+    const meta = getDayMeta(day);
+    const isVid = isVideo(filename);
+
+    const item = document.createElement('div');
+    item.className = 'photo-item';
+    item.dataset.day = day;
+    item.dataset.idx = idx;
+    item.dataset.file = filename;
+
+    const badge = `<div class="day-badge" style="border-color:${meta.color}40;color:${meta.color}">${meta.label}</div>`;
+
+    if (isVid) {
+      item.innerHTML = `
+        ${badge}
+        <video src="${filename}" muted preload="metadata" style="width:100%;display:block;border-radius:12px;min-height:150px;background:#111" loading="lazy"></video>
+        <div class="video-icon">▶</div>
+        <div class="photo-overlay">
+          <div class="photo-meta">🎬 ${filename}<br>${meta.title}</div>
+          <div class="photo-actions">
+            <button class="photo-btn" onclick="openLightbox(${idx},event)">▶ Play</button>
+            <button class="photo-btn" onclick="downloadFile('${filename}',event)">⬇ Save</button>
+          </div>
+        </div>`;
+    } else {
+      item.innerHTML = `
+        ${badge}
+        <img src="${filename}" alt="${filename}" loading="lazy" decoding="async" onerror="this.parentElement.style.display='none'">
+        <div class="photo-overlay">
+          <div class="photo-meta">📸 ${formatTime(filename)}<br>${meta.title}</div>
+          <div class="photo-actions">
+            <button class="photo-btn" onclick="openLightbox(${idx},event)">🔍 View</button>
+            <button class="photo-btn" onclick="downloadFile('${filename}',event)">⬇ Save</button>
+          </div>
+        </div>`;
+    }
+
+    item.addEventListener('click', (e) => {
+      if (selectMode) { toggleSelect(item, filename); return; }
+      if (!e.target.classList.contains('photo-btn')) openLightbox(idx, e);
+    });
+
+    container.appendChild(item);
+  });
+
+  filterDay('all');
+}
+
+// ─── FILTER ──────────────────────────────────────────────────────────────────
+function filterDay(day) {
+  currentFilter = day;
+  const items = document.querySelectorAll('.photo-item');
+  visibleItems = [];
+  let shown = 0;
+
+  items.forEach(item => {
+    const match = day === 'all' || item.dataset.day === day;
+    item.classList.toggle('hidden', !match);
+    if (match) {
+      visibleItems.push(item);
+      shown++;
+    }
+  });
+
+  document.getElementById('photo-count').textContent = shown;
+
+  // Update pills
+  document.querySelectorAll('.pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.day === day);
+  });
+
+  // Scroll to gallery
+  if (day !== 'all') {
+    document.getElementById('gallery').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+}
+
+// ─── LIGHTBOX ────────────────────────────────────────────────────────────────
+function openLightbox(fileIdx, e) {
+  if (e) e.stopPropagation();
+  currentLbIndex = visibleItems.findIndex(el => parseInt(el.dataset.idx) === fileIdx);
+  if (currentLbIndex === -1) currentLbIndex = 0;
+  showLb(currentLbIndex);
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function showLb(vIdx) {
+  currentLbIndex = vIdx;
+  const item = visibleItems[vIdx];
+  if (!item) return;
+
+  const filename = item.dataset.file;
+  const day = item.dataset.day;
+  const meta = getDayMeta(day);
+  const wrap = document.getElementById('lbMediaWrap');
+  const isVid = isVideo(filename);
+
+  wrap.innerHTML = '';
+  if (isVid) {
+    wrap.innerHTML = `<video class="lb-video" src="${filename}" controls autoplay></video>`;
+  } else {
+    wrap.innerHTML = `<img class="lb-img" src="${filename}" alt="${filename}">`;
+  }
+
+  document.getElementById('lbDayTag').textContent = `${meta.label} — ${meta.title}`;
+  document.getElementById('lbFilename').textContent = filename;
+  document.getElementById('lbCounter').textContent = `${vIdx+1} / ${visibleItems.length}`;
+}
+
+function lbNav(dir) {
+  let next = currentLbIndex + dir;
+  if (next < 0) next = visibleItems.length - 1;
+  if (next >= visibleItems.length) next = 0;
+  showLb(next);
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('lbMediaWrap').innerHTML = '';
+}
+
+function closeLightboxOnBg(e) {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+}
+
+function downloadCurrent() {
+  const item = visibleItems[currentLbIndex];
+  if (item) downloadFile(item.dataset.file);
+}
+
+// ─── DOWNLOAD ─────────────────────────────────────────────────────────────────
+function downloadFile(filename, e) {
+  if (e) e.stopPropagation();
+  const a = document.createElement('a');
+  a.href = filename;
+  a.download = filename;
+  a.click();
+}
+
+function downloadDay(day) {
+  const files = FILE_LIST.filter(f => getDay(f) === day && isImage(f));
+  if (!files.length) { alert('No images found for this day.'); return; }
+  files.forEach((f, i) => {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = f; a.download = f; a.click();
+    }, i * 200);
+  });
+}
+
+function downloadAll() {
+  const files = FILE_LIST.filter(f => isImage(f));
+  if (confirm(`Download all ${files.length} photos? This will trigger ${files.length} downloads.`)) {
+    files.forEach((f, i) => {
+      setTimeout(() => {
+        const a = document.createElement('a');
+        a.href = f; a.download = f; a.click();
+      }, i * 150);
+    });
+  }
+}
+
+// ─── SELECT MODE ──────────────────────────────────────────────────────────────
+function toggleSelectMode() {
+  selectMode = !selectMode;
+  const btn = document.getElementById('selectBtn');
+  const dlBtn = document.getElementById('downloadSelBtn');
+  btn.textContent = selectMode ? '✕ Cancel Select' : '☐ Select';
+  dlBtn.classList.toggle('hidden', !selectMode);
+  document.getElementById('selected-info').classList.toggle('hidden', !selectMode);
+  if (!selectMode) {
+    selected.clear();
+    document.querySelectorAll('.photo-item.selected').forEach(el => el.classList.remove('selected'));
+    updateSelectedCount();
+  }
+}
+
+function toggleSelect(item, filename) {
+  if (selected.has(filename)) {
+    selected.delete(filename);
+    item.classList.remove('selected');
+  } else {
+    selected.add(filename);
+    item.classList.add('selected');
+  }
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  document.getElementById('selected-count').textContent = selected.size;
+}
+
+function downloadSelected() {
+  if (!selected.size) { alert('No items selected.'); return; }
+  const files = Array.from(selected);
+  files.forEach((f, i) => {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = f; a.download = f; a.click();
+    }, i * 200);
+  });
+}
+
+// ─── KEYBOARD ────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'ArrowLeft') lbNav(-1);
+  if (e.key === 'ArrowRight') lbNav(1);
+  if (e.key === 'Escape') closeLightbox();
+});
+
+// ─── SCROLL ANIMATIONS ────────────────────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Progress bar
+window.addEventListener('scroll', () => {
+  const p = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  document.getElementById('progress').style.width = p + '%';
+});
+
+// ─── START ───────────────────────────────────────────────────────────────────
+buildGallery();
+</script>
+</body>
+</html>
