@@ -789,7 +789,7 @@
     <span id="selected-info" class="hidden"> · <span id="selected-count">0</span> selected</span>
   </div>
 
-  <div class="masonry" id="gallery"></div>
+  <div class="masonry" id="masonry-grid"></div>
 </section>
 
 <!-- DOWNLOAD ALL -->
@@ -927,7 +927,7 @@ function getDayMeta(d) {
 }
 
 function buildGallery() {
-  const container = document.getElementById('gallery');
+  const container = document.getElementById('masonry-grid');
   container.innerHTML = '';
 
   // Count per day
@@ -965,7 +965,7 @@ function buildGallery() {
     if (isVid) {
       item.innerHTML = `
         ${badge}
-        <video src="${filename}" muted preload="metadata" style="width:100%;display:block;border-radius:12px;min-height:150px;background:#111" loading="lazy"></video>
+        <video src="${filename}" muted preload="metadata" style="width:100%;display:block;border-radius:12px;min-height:150px;background:#111"></video>
         <div class="video-icon">▶</div>
         <div class="photo-overlay">
           <div class="photo-meta">🎬 ${filename}<br>${meta.title}</div>
@@ -977,7 +977,9 @@ function buildGallery() {
     } else {
       item.innerHTML = `
         ${badge}
-        <img src="${filename}" alt="${filename}" loading="lazy" decoding="async" onerror="this.parentElement.style.display='none'">
+        <img src="${filename}" alt="${filename}" decoding="async"
+             style="width:100%;display:block;min-height:120px;background:#16213e"
+             onerror="this.style.minHeight='80px';this.style.opacity='0.3';this.alt='⚠ Not loaded'">
         <div class="photo-overlay">
           <div class="photo-meta">📸 ${formatTime(filename)}<br>${meta.title}</div>
           <div class="photo-actions">
