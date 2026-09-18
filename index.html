@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bangalore → Srisailam → Hampi Road Trip 2026</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root {
     --gold: #f5a623;
@@ -501,6 +503,113 @@
     margin-bottom: 1rem;
   }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* ── DAYS COUNTER ── */
+  .stat.days-since .stat-val { color: var(--accent); }
+  .stat.days-since .stat-lbl { color: var(--muted); }
+
+  /* ── MAP ── */
+  .map-section { padding: 4rem 2rem; background: linear-gradient(180deg,var(--deep),#0d1b2a); }
+  .map-wrap {
+    max-width: 1100px; margin: 0 auto;
+    border-radius: 20px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  #route-map { height: 520px; width: 100%; }
+  .leaflet-popup-content-wrapper {
+    background: #16213e !important; color: #f0f0f0 !important;
+    border: 1px solid rgba(245,166,35,0.4) !important;
+    border-radius: 12px !important; box-shadow: 0 8px 30px rgba(0,0,0,0.5) !important;
+  }
+  .leaflet-popup-tip { background: #16213e !important; }
+  .leaflet-popup-content { margin: 12px 16px !important; }
+  .map-popup-title { font-weight: 800; font-size: 1rem; color: #f5a623; margin-bottom: 4px; }
+  .map-popup-sub { font-size: 0.8rem; color: #8892b0; margin-bottom: 8px; }
+  .map-popup-img { width: 180px; height: 110px; object-fit: cover; border-radius: 8px; display:block; }
+  .map-day-marker {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 0.85rem; color: #fff;
+    border: 3px solid rgba(255,255,255,0.8);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    cursor: pointer;
+  }
+  @keyframes pulse-marker {
+    0%,100% { box-shadow: 0 0 0 0 rgba(245,166,35,0.6), 0 4px 12px rgba(0,0,0,0.5); }
+    50% { box-shadow: 0 0 0 10px rgba(245,166,35,0), 0 4px 12px rgba(0,0,0,0.5); }
+  }
+  .map-day-marker.pulse { animation: pulse-marker 2s infinite; }
+
+  /* ── SLIDESHOW ── */
+  .slideshow-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: #000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.4s;
+  }
+  .slideshow-overlay.open { opacity: 1; pointer-events: all; }
+  .ss-progress {
+    position: absolute; top: 0; left: 0; height: 3px;
+    background: var(--gold); transition: width linear;
+    z-index: 10;
+  }
+  .ss-img-wrap {
+    position: relative; width: 100%; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ss-img {
+    max-width: 100vw; max-height: 100vh;
+    object-fit: contain; position: absolute;
+    opacity: 0; transition: opacity 0.8s ease-in-out;
+    pointer-events: none;
+  }
+  .ss-img.ss-active { opacity: 1; }
+  .ss-img.ss-prev   { opacity: 0; }
+  .ss-controls {
+    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 0.8rem; align-items: center; z-index: 10;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+    padding: 0.7rem 1.4rem; border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .ss-btn {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; border-radius: 50%; width: 40px; height: 40px;
+    cursor: pointer; font-size: 1.1rem; display:flex; align-items:center; justify-content:center;
+    transition: all 0.2s;
+  }
+  .ss-btn:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+  .ss-counter-disp {
+    color: rgba(255,255,255,0.7); font-size: 0.85rem; min-width: 60px; text-align:center;
+  }
+  .ss-info {
+    position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(12px);
+    padding: 0.5rem 1.2rem; border-radius: 50px;
+    font-size: 0.85rem; color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.12); z-index: 10;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .ss-close-btn {
+    position: fixed; top: 1.2rem; right: 1.5rem; z-index: 10;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; width: 44px; height: 44px; border-radius: 50%;
+    cursor: pointer; font-size: 1.3rem; display:flex; align-items:center; justify-content:center;
+    transition: all 0.2s;
+  }
+  .ss-close-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* ── SHARE TOAST ── */
+  .share-toast {
+    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--green); color: #fff; padding: 0.7rem 1.5rem;
+    border-radius: 50px; font-size: 0.9rem; font-weight: 600;
+    z-index: 3000; transition: transform 0.3s;
+    pointer-events: none;
+  }
+  .share-toast.show { transform: translateX(-50%) translateY(0); }
+
 </style>
 </head>
 <body>
@@ -543,6 +652,11 @@
         <div class="stat-val">12+</div>
         <div class="stat-lbl">Sites visited</div>
       </div>
+      <div class="stat days-since">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-val" id="daysSince">—</div>
+        <div class="stat-lbl">Days ago</div>
+      </div>
     </div>
     <div class="route-bar">
       <span class="city">Bangalore</span>
@@ -579,7 +693,9 @@
   <div class="nav-brand">🗺️ BLR → SRS → HMP</div>
   <div class="nav-links">
     <a class="nav-btn" href="#itinerary">Itinerary</a>
+    <a class="nav-btn" href="#route-map-section">Map</a>
     <a class="nav-btn" href="#gallery">Gallery</a>
+    <button class="nav-btn" onclick="startSlideshow()" style="cursor:pointer">▶ Slideshow</button>
     <a class="nav-btn" href="#highlights">Highlights</a>
     <a class="nav-btn" href="#download">Download</a>
   </div>
@@ -753,6 +869,37 @@
   </div>
 </section>
 
+<!-- ROUTE MAP -->
+<section id="route-map-section" class="map-section">
+  <div class="section-title fade-in" style="margin-bottom:2rem">
+    <h2>Journey Map</h2>
+    <p>~1,450 km across Karnataka & Andhra Pradesh — hover the markers to explore each stop</p>
+  </div>
+  <div class="map-wrap fade-in">
+    <div id="route-map"></div>
+  </div>
+</section>
+
+<!-- SLIDESHOW OVERLAY -->
+<div class="slideshow-overlay" id="ssOverlay">
+  <div class="ss-progress" id="ssProgress"></div>
+  <button class="ss-close-btn" onclick="stopSlideshow()">✕</button>
+  <div class="ss-info">
+    <span id="ssDayTag" style="color:var(--gold);font-weight:700"></span>
+    <span id="ssTitle" style="color:rgba(255,255,255,0.7)"></span>
+  </div>
+  <div class="ss-img-wrap" id="ssImgWrap"></div>
+  <div class="ss-controls">
+    <button class="ss-btn" onclick="ssStep(-1)">‹</button>
+    <button class="ss-btn" id="ssPlayBtn" onclick="ssTogglePlay()">⏸</button>
+    <span class="ss-counter-disp" id="ssCounterDisp">1 / 1</span>
+    <button class="ss-btn" onclick="ssStep(1)">›</button>
+  </div>
+</div>
+
+<!-- SHARE TOAST -->
+<div class="share-toast" id="shareToast">✓ Link copied to clipboard!</div>
+
 <!-- GALLERY -->
 <section id="gallery" class="gallery-section">
   <div class="section-title fade-in" style="padding:0 2rem;max-width:1400px;margin:0 auto 2rem;">
@@ -888,6 +1035,7 @@
       </div>
       <div class="lb-btns">
         <button class="lb-btn" onclick="downloadCurrent()">⬇ Download</button>
+        <button class="lb-btn" onclick="shareCurrent()">↗ Share</button>
         <button class="lb-btn" onclick="lbNav(-1)">‹ Prev</button>
         <button class="lb-btn" onclick="lbNav(1)">Next ›</button>
       </div>
@@ -1009,6 +1157,7 @@ function buildGallery() {
           <div class="photo-meta">📸 ${formatTime(filename)}<br>${meta.title}</div>
           <div class="photo-actions">
             <button class="photo-btn" onclick="openLightbox(${idx},event)">🔍 View</button>
+            <button class="photo-btn" onclick="sharePhoto('${filename}',event)">↗ Share</button>
             <button class="photo-btn" onclick="downloadFile('${filename}',event)">⬇ Save</button>
           </div>
         </div>`;
@@ -1185,12 +1334,218 @@ function downloadSelected() {
 
 // ─── KEYBOARD ────────────────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
+  if (document.getElementById('ssOverlay').classList.contains('open')) {
+    if (e.key === 'ArrowLeft')  ssStep(-1);
+    if (e.key === 'ArrowRight') ssStep(1);
+    if (e.key === 'Escape')     stopSlideshow();
+    if (e.key === ' ')          ssTogglePlay();
+    return;
+  }
   const lb = document.getElementById('lightbox');
   if (!lb.classList.contains('open')) return;
   if (e.key === 'ArrowLeft') lbNav(-1);
   if (e.key === 'ArrowRight') lbNav(1);
   if (e.key === 'Escape') closeLightbox();
 });
+
+// ─── DAYS SINCE TRIP ─────────────────────────────────────────────────────────
+function animateCount(el, target, duration) {
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    el.textContent = Math.floor(t * target);
+    if (t < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(step);
+}
+const tripStart = new Date('2026-09-12');
+const daysDiff = Math.floor((Date.now() - tripStart) / 86400000);
+const daysSinceEl = document.getElementById('daysSince');
+if (daysDiff >= 0) {
+  setTimeout(() => animateCount(daysSinceEl, daysDiff, 1500), 600);
+} else {
+  daysSinceEl.textContent = 'Soon!';
+}
+
+// ─── ROUTE MAP ───────────────────────────────────────────────────────────────
+const STOPS = [
+  { name:'Bangalore',      day:'Start',  lat:12.9716, lng:77.5946, color:'#e74c3c', photo:'20260912_034555833_iOS.jpg', desc:'Trip begins!' },
+  { name:'Lepakshi',       day:'Day 1',  lat:13.8015, lng:77.6074, color:'#e74c3c', photo:'20260912_114056226_iOS.jpg', desc:'Hanging Pillar & Giant Nandi' },
+  { name:'Gandikota',      day:'Day 1',  lat:15.0345, lng:78.2778, color:'#e74c3c', photo:'20260912_120005708_iOS.jpg', desc:"India's Grand Canyon" },
+  { name:'Belum Caves',    day:'Day 2',  lat:15.0833, lng:78.4833, color:'#e67e22', photo:'20260913_053124936_iOS.jpg', desc:'Underground cave formations' },
+  { name:'Yaganti',        day:'Day 2',  lat:15.4158, lng:78.0153, color:'#e67e22', photo:'20260913_073930446_iOS.jpg', desc:'Serene cave temple' },
+  { name:'Mahanandi',      day:'Day 2',  lat:15.4833, lng:78.5167, color:'#e67e22', photo:'20260913_121550145_iOS.jpg', desc:'Sacred temple & nature' },
+  { name:'Ahobilam',       day:'Day 3',  lat:15.1333, lng:78.6500, color:'#f1c40f', photo:'20260914_044851157_iOS.jpg', desc:'Sacred temples cluster' },
+  { name:'Srisailam',      day:'Day 3–4',lat:16.0745, lng:78.8714, color:'#2ecc71', photo:'20260915_124311393_iOS.jpg', desc:'Mallikarjuna Jyotirlinga' },
+  { name:'Hampi',          day:'Day 5–6',lat:15.3350, lng:76.4600, color:'#3498db', photo:'20260917_030108092_iOS.jpg', desc:'UNESCO World Heritage Site' },
+  { name:'Mandragiri Betta',day:'Day 7', lat:13.3379, lng:77.1173, color:'#9b59b6', photo:'20260918_092235655_iOS.jpg', desc:'Peaceful hilltop near Tumkur' },
+  { name:'Bangalore',      day:'End',    lat:12.9616, lng:77.6046, color:'#9b59b6', photo:'20260918_092741876_iOS.jpg', desc:'Home sweet home!' },
+];
+
+const routeCoords = STOPS.map(s => [s.lat, s.lng]);
+
+const map = L.map('route-map', {
+  center: [14.8, 77.8],
+  zoom: 7,
+  zoomControl: true,
+  scrollWheelZoom: false,
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CARTO',
+  maxZoom: 18,
+}).addTo(map);
+
+// Dotted route line
+const routeLine = L.polyline(routeCoords, {
+  color: '#f5a623', weight: 3,
+  dashArray: '8, 10', dashOffset: '0',
+  opacity: 0.85,
+}).addTo(map);
+
+// Animated dash offset
+let dashOff = 0;
+setInterval(() => {
+  dashOff = (dashOff + 1) % 18;
+  routeLine.setStyle({ dashOffset: String(dashOff) });
+}, 60);
+
+// Markers
+STOPS.forEach((stop, i) => {
+  const icon = L.divIcon({
+    className: '',
+    html: `<div class="map-day-marker${i === 0 || i === STOPS.length-1 ? ' pulse' : ''}"
+                style="background:${stop.color}">${i === 0 ? '🚗' : i === STOPS.length-1 ? '🏠' : i}</div>`,
+    iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20],
+  });
+
+  const marker = L.marker([stop.lat, stop.lng], { icon }).addTo(map);
+
+  marker.bindPopup(`
+    <div class="map-popup-title">${stop.name}</div>
+    <div class="map-popup-sub">${stop.day} · ${stop.desc}</div>
+    <img class="map-popup-img" src="${stop.photo}" alt="${stop.name}"
+         onerror="this.style.display='none'">
+  `, { maxWidth: 220 });
+
+  // Open first popup on load
+  if (i === 0) setTimeout(() => marker.openPopup(), 800);
+});
+
+// ─── SLIDESHOW ───────────────────────────────────────────────────────────────
+const SS_INTERVAL = 3500;
+let ssPhotos = [];
+let ssIdx = 0;
+let ssPlaying = true;
+let ssTimer = null;
+let ssProgressTimer = null;
+
+function startSlideshow() {
+  ssPhotos = FILE_LIST.filter(f => isImage(f));
+  if (!ssPhotos.length) return;
+  ssIdx = 0;
+  ssPlaying = true;
+  document.getElementById('ssOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('ssPlayBtn').textContent = '⏸';
+
+  const wrap = document.getElementById('ssImgWrap');
+  wrap.innerHTML = '';
+  // Pre-create two img slots for crossfade
+  ['ss-a','ss-b'].forEach(id => {
+    const img = document.createElement('img');
+    img.className = 'ss-img'; img.id = id;
+    wrap.appendChild(img);
+  });
+
+  ssShowFrame(0);
+  ssSchedule();
+}
+
+function ssShowFrame(idx) {
+  const filename = ssPhotos[idx];
+  const meta = getDayMeta(getDay(filename));
+  const active = document.getElementById(idx % 2 === 0 ? 'ss-a' : 'ss-b');
+  const prev   = document.getElementById(idx % 2 === 0 ? 'ss-b' : 'ss-a');
+
+  active.src = filename;
+  active.classList.add('ss-active');
+  prev.classList.remove('ss-active');
+
+  document.getElementById('ssDayTag').textContent  = meta.label;
+  document.getElementById('ssTitle').textContent   = meta.title;
+  document.getElementById('ssCounterDisp').textContent = `${idx + 1} / ${ssPhotos.length}`;
+
+  // Progress bar
+  const prog = document.getElementById('ssProgress');
+  prog.style.transition = 'none';
+  prog.style.width = '0%';
+  requestAnimationFrame(() => {
+    prog.style.transition = `width ${SS_INTERVAL}ms linear`;
+    prog.style.width = '100%';
+  });
+}
+
+function ssSchedule() {
+  clearTimeout(ssTimer);
+  if (!ssPlaying) return;
+  ssTimer = setTimeout(() => {
+    ssIdx = (ssIdx + 1) % ssPhotos.length;
+    ssShowFrame(ssIdx);
+    ssSchedule();
+  }, SS_INTERVAL);
+}
+
+function ssStep(dir) {
+  clearTimeout(ssTimer);
+  ssIdx = (ssIdx + dir + ssPhotos.length) % ssPhotos.length;
+  ssShowFrame(ssIdx);
+  if (ssPlaying) ssSchedule();
+}
+
+function ssTogglePlay() {
+  ssPlaying = !ssPlaying;
+  document.getElementById('ssPlayBtn').textContent = ssPlaying ? '⏸' : '▶';
+  if (ssPlaying) ssSchedule();
+  else clearTimeout(ssTimer);
+}
+
+function stopSlideshow() {
+  clearTimeout(ssTimer);
+  document.getElementById('ssOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('ssImgWrap').innerHTML = '';
+}
+
+// ─── SHARE ───────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('shareToast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function sharePhoto(filename, e) {
+  if (e) e.stopPropagation();
+  const url = window.location.origin + window.location.pathname.replace('index.html','') + filename;
+  if (navigator.share) {
+    navigator.share({
+      title: 'Bangalore → Srisailam → Hampi Road Trip 2026',
+      text: `📸 Check out this photo from our road trip!`,
+      url,
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url).then(() => showToast('✓ Link copied!')).catch(() => showToast('↗ ' + url));
+  }
+}
+
+function shareCurrent() {
+  const item = visibleItems[currentLbIndex];
+  if (item) sharePhoto(item.dataset.file);
+}
+
+
 
 // ─── SCROLL ANIMATIONS ────────────────────────────────────────────────────────
 const observer = new IntersectionObserver(entries => {
