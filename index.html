@@ -518,6 +518,19 @@
     aspect-ratio: 16/9;
   }
   .reel-player-wrap video { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .reel-play-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; background: rgba(0,0,0,0.35); transition: opacity 0.2s;
+  }
+  .reel-play-overlay .big-play {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: rgba(245,166,35,0.9); display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; transition: transform 0.2s; padding-left: 4px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+  .reel-play-overlay:hover .big-play { transform: scale(1.1); }
+  .reel-play-overlay.hidden { display: none; }
   .reel-overlay-info {
     position: absolute; bottom: 0; left: 0; right: 0;
     padding: 1.5rem 1.5rem 1rem;
@@ -1126,6 +1139,9 @@
   <div class="reel-stage">
     <div class="reel-player-wrap">
       <video id="reelVideo" playsinline></video>
+      <div class="reel-play-overlay" id="reelPlayOverlay" onclick="reelToggle()">
+        <div class="big-play">▶</div>
+      </div>
       <div class="reel-overlay-info">
         <span class="reel-title" id="reelTitle">Loading...</span>
         <span class="reel-counter-badge" id="reelBadge">1 / 31</span>
@@ -1787,6 +1803,7 @@ buildGallery();
 const REEL_FILES = FILE_LIST.filter(f => isVideo(f));
 let reelIdx = 0;
 let reelMuted = true;
+let reelPlaying = false;
 
 function reelInit() {
   const strip = document.getElementById('reelStrip');
@@ -1795,57 +1812,86 @@ function reelInit() {
     const thumb = document.createElement('div');
     thumb.className = 'reel-thumb' + (i === 0 ? ' active' : '');
     thumb.id = `rthumb-${i}`;
-    thumb.onclick = () => reelLoad(i);
+    thumb.onclick = () => reelLoad(i, true);
     const day = getDay(f);
     const meta = getDayMeta(day);
     thumb.innerHTML = `<div style="width:100%;height:100%;background:linear-gradient(135deg,${meta.color}33,#111);display:flex;align-items:center;justify-content:center;font-size:1.4rem">▶</div>
       <div class="reel-thumb-label">${meta.label}</div>`;
     strip.appendChild(thumb);
   });
-  if (REEL_FILES.length) reelLoad(0);
+  // Load first video without autoplaying — user must press play
+  if (REEL_FILES.length) reelLoad(0, false);
 }
 
-function reelLoad(i) {
+function reelLoad(i, play) {
   reelIdx = i;
   const vid = document.getElementById('reelVideo');
+  vid.pause();
   vid.src = REEL_FILES[i];
   vid.muted = reelMuted;
-  vid.play().catch(() => {});
-  document.getElementById('reelPlayBtn').textContent = '⏸';
+  vid.load();
+
+  const shouldPlay = (play !== undefined) ? play : reelPlaying;
+  if (shouldPlay) {
+    vid.play().then(() => {
+      reelPlaying = true;
+      document.getElementById('reelPlayBtn').textContent = '⏸';
+      const ov = document.getElementById('reelPlayOverlay');
+      if (ov) ov.classList.add('hidden');
+    }).catch(() => {
+      reelPlaying = false;
+      document.getElementById('reelPlayBtn').textContent = '▶';
+      const ov = document.getElementById('reelPlayOverlay');
+      if (ov) ov.classList.remove('hidden');
+    });
+  } else {
+    reelPlaying = false;
+    document.getElementById('reelPlayBtn').textContent = '▶';
+    const ov = document.getElementById('reelPlayOverlay');
+    if (ov) ov.classList.remove('hidden');
+  }
+
   document.getElementById('reelMuteBtn').textContent = reelMuted ? '🔇' : '🔊';
   const day = getDay(REEL_FILES[i]);
   const meta = getDayMeta(day);
-  document.getElementById('reelTitle').textContent = `${meta.label} — ${REEL_FILES[i]}`;
+  document.getElementById('reelTitle').textContent = `${meta.label} · ${REEL_FILES[i]}`;
   document.getElementById('reelBadge').textContent = `${i + 1} / ${REEL_FILES.length}`;
   document.querySelectorAll('.reel-thumb').forEach((t, ti) => t.classList.toggle('active', ti === i));
-  const strip = document.getElementById('reelStrip');
   const activeThumb = document.getElementById(`rthumb-${i}`);
   if (activeThumb) activeThumb.scrollIntoView({ inline: 'center', behavior: 'smooth', block: 'nearest' });
 }
 
-function reelNext() {
-  reelLoad((reelIdx + 1) % REEL_FILES.length);
-}
-function reelPrev() {
-  reelLoad((reelIdx - 1 + REEL_FILES.length) % REEL_FILES.length);
-}
+function reelNext() { reelLoad((reelIdx + 1) % REEL_FILES.length); }
+function reelPrev() { reelLoad((reelIdx - 1 + REEL_FILES.length) % REEL_FILES.length); }
+
 function reelToggle() {
   const vid = document.getElementById('reelVideo');
-  if (vid.paused) { vid.play(); document.getElementById('reelPlayBtn').textContent = '⏸'; }
-  else { vid.pause(); document.getElementById('reelPlayBtn').textContent = '▶'; }
+  const overlay = document.getElementById('reelPlayOverlay');
+  if (vid.paused || vid.ended) {
+    vid.play().then(() => {
+      reelPlaying = true;
+      document.getElementById('reelPlayBtn').textContent = '⏸';
+      if (overlay) overlay.classList.add('hidden');
+    }).catch(() => {});
+  } else {
+    vid.pause();
+    reelPlaying = false;
+    document.getElementById('reelPlayBtn').textContent = '▶';
+    if (overlay) overlay.classList.remove('hidden');
+  }
 }
+
 function reelToggleMute() {
   reelMuted = !reelMuted;
   document.getElementById('reelVideo').muted = reelMuted;
   document.getElementById('reelMuteBtn').textContent = reelMuted ? '🔇' : '🔊';
 }
 
-document.getElementById('reelVideo').addEventListener('ended', reelNext);
-document.getElementById('reelVideo').addEventListener('play', () => {
-  document.getElementById('reelPlayBtn').textContent = '⏸';
-});
-document.getElementById('reelVideo').addEventListener('pause', () => {
-  document.getElementById('reelPlayBtn').textContent = '▶';
+const _reelVid = document.getElementById('reelVideo');
+_reelVid.addEventListener('ended', () => reelLoad((reelIdx + 1) % REEL_FILES.length));
+_reelVid.addEventListener('error', () => {
+  // Skip unsupported format (e.g. MOV in Chrome)
+  if (reelPlaying) reelLoad((reelIdx + 1) % REEL_FILES.length);
 });
 
 reelInit();
