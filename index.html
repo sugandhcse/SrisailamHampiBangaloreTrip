@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bangalore → Srisailam → Hampi Road Trip 2026</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f5a623">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BLR→HMP Trip">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<!-- Open Graph (link previews on WhatsApp / iMessage / Twitter) -->
+<meta property="og:type"        content="website">
+<meta property="og:title"       content="Bangalore → Srisailam → Hampi Road Trip 2026">
+<meta property="og:description" content="7 days · 3 people · ~1,450 km · Temples, caves, gorges &amp; Hampi ruins">
+<meta property="og:image"       content="https://sugandhcse.github.io/SrisailamHampiBangaloreTrip/icons/icon-512.png">
+<meta property="og:url"         content="https://sugandhcse.github.io/SrisailamHampiBangaloreTrip/">
+<meta name="twitter:card"       content="summary_large_image">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
@@ -781,6 +796,15 @@
   }
   .share-toast.show { transform: translateX(-50%) translateY(0); }
 
+  /* ── LIGHTBOX SWIPE HINT (mobile) ── */
+  .lb-swipe-hint {
+    display: none;
+    position: fixed; bottom: 5.2rem; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.4); font-size: 0.72rem;
+    pointer-events: none; letter-spacing: 1px; white-space: nowrap;
+  }
+  @media (max-width: 768px) { .lb-swipe-hint { display: block; } }
+
 </style>
 </head>
 <body>
@@ -1251,6 +1275,7 @@
     </div>
   </div>
   <div class="lb-counter" id="lbCounter">1 / 1</div>
+  <div class="lb-swipe-hint">← swipe to navigate · swipe down to close →</div>
 </div>
 
 <script>
@@ -1950,7 +1975,36 @@ function toggleMapStyle() {
 // Replace initial tile layer reference so toggle can remove it
 map.eachLayer(l => { if (l instanceof L.TileLayer) currentTileLayer = l; });
 
-// ─── ZOOM / PAN IN LIGHTBOX ──────────────────────────────────────────────────
+// ─── LIGHTBOX TOUCH SWIPE ─────────────────────────────────────────────────────
+let lbSwipeStartX = 0;
+let lbSwipeStartY = 0;
+
+document.getElementById('lightbox').addEventListener('touchstart', e => {
+  if (e.touches.length !== 1) return;
+  lbSwipeStartX = e.touches[0].clientX;
+  lbSwipeStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.getElementById('lightbox').addEventListener('touchend', e => {
+  if (e.changedTouches.length !== 1) return;
+  if (lbScale > 1) return; // let zoom pan handle it when zoomed in
+  const dx = e.changedTouches[0].clientX - lbSwipeStartX;
+  const dy = e.changedTouches[0].clientY - lbSwipeStartY;
+  // Only act if horizontal swipe dominates and exceeds 50px threshold
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+    if (dx < 0) lbNav(1);   // swipe left  → next
+    else         lbNav(-1);  // swipe right → prev
+  }
+}, { passive: true });
+
+// Swipe-down to close lightbox on mobile
+document.getElementById('lightbox').addEventListener('touchend', e => {
+  if (e.changedTouches.length !== 1) return;
+  if (lbScale > 1) return;
+  const dy = e.changedTouches[0].clientY - lbSwipeStartY;
+  const dx = Math.abs(e.changedTouches[0].clientX - lbSwipeStartX);
+  if (dy > 90 && dx < 60) closeLightbox(); // swipe down ≥ 90px
+}, { passive: true });
 let lbScale = 1;
 let lbOffX = 0;
 let lbOffY = 0;

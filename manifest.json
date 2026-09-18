@@ -1,0 +1,24 @@
+{
+  "name": "Bangalore → Srisailam → Hampi 2026",
+  "short_name": "BLR→HMP Trip",
+  "description": "Road trip photo gallery — 7 days, 3 people, ~1,450 km across Karnataka & Andhra Pradesh",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1a1a2e",
+  "theme_color": "#f5a623",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
