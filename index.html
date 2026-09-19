@@ -659,12 +659,19 @@
 
     /* ── HERO ── */
     .hero { min-height: auto; padding: 3.5rem 1rem 2.5rem; }
+    .hero-content { width: 100%; }
     .hero h1 { font-size: clamp(1.6rem, 7vw, 2.2rem); }
     .hero-sub { font-size: 0.9rem; margin: 0.6rem 0 1.4rem; }
-    .hero-stats { gap: 0.6rem; margin-bottom: 1.5rem; }
-    .stat { min-width: 80px; padding: 0.6rem 0.8rem; }
-    .stat-val { font-size: 1rem; }
-    .stat-lbl { font-size: 0.65rem; }
+    /* Stats: fixed 3-col grid so all 6 tiles always visible */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat { min-width: unset; padding: 0.6rem 0.4rem; }
+    .stat-val { font-size: 0.95rem; }
+    .stat-lbl { font-size: 0.6rem; }
     /* Route bar: scroll horizontally instead of wrapping into many lines */
     .route-bar {
       font-size: 0.78rem; gap: 0.2rem; flex-wrap: nowrap;
@@ -696,11 +703,11 @@
     .gallery-section { padding: 2rem 0; }
     .gallery-controls { padding: 0 0.8rem; flex-direction: column; align-items: stretch; gap: 0.7rem; }
     .filter-pills {
-      flex-wrap: nowrap; overflow-x: auto; padding-bottom: 0.4rem;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      overflow-x: visible;
     }
-    .pill { white-space: nowrap; flex-shrink: 0; padding: 0.6rem 1rem; font-size: 0.8rem; }
+    .pill { white-space: nowrap; flex-shrink: 0; padding: 0.5rem 0.8rem; font-size: 0.78rem; }
     .gallery-actions { justify-content: flex-start; }
     .masonry { column-count: 2 !important; column-gap: 0.5rem; padding: 0 0.8rem; }
     .photo-item { margin-bottom: 0.5rem; }
@@ -757,7 +764,9 @@
     .masonry { column-count: 1 !important; }
     .highlights-grid { grid-template-columns: 1fr; }
     .hero h1 { font-size: 1.5rem; }
-    .stat { min-width: 70px; padding: 0.5rem 0.6rem; }
+    .stat { padding: 0.45rem 0.3rem; }
+    .stat-val { font-size: 0.85rem; }
+    .stat-lbl { font-size: 0.55rem; }
   }
 
 
@@ -916,9 +925,9 @@
         <div class="stat-lbl">Days</div>
       </div>
       <div class="stat">
-        <div class="stat-icon">👥</div>
+        <div class="stat-icon">👨‍👩‍👦</div>
         <div class="stat-val">3</div>
-        <div class="stat-lbl">People</div>
+        <div class="stat-lbl">Family</div>
       </div>
       <div class="stat">
         <div class="stat-icon">🚗</div>
@@ -1332,8 +1341,8 @@
     </div>
     <div class="hl-card fade-in">
       <div class="hl-icon">👨‍👩‍👧‍👦</div>
-      <h4>3 People</h4>
-      <p>Good vibes, great roads — three friends, one car, countless memories across Karnataka & Andhra Pradesh.</p>
+      <h4>Family Trip</h4>
+      <p>Father, Mother & Son — one car, seven days, and countless memories across temples, gorges and heritage sites of Karnataka & Andhra Pradesh.</p>
     </div>
   </div>
 </section>
@@ -1341,7 +1350,7 @@
 <!-- FOOTER -->
 <footer>
   <p><strong>Bangalore → Srisailam → Hampi Road Trip 2026</strong></p>
-  <p style="margin-top:0.5rem">Sep 12–18, 2026 &nbsp;·&nbsp; 7 Days / 6 Nights &nbsp;·&nbsp; 3 People &nbsp;·&nbsp; ~1,450 km</p>
+  <p style="margin-top:0.5rem">Sep 12–18, 2026 &nbsp;·&nbsp; 7 Days / 6 Nights &nbsp;·&nbsp; Father, Mother & Son &nbsp;·&nbsp; ~1,450 km</p>
   <p style="margin-top:0.5rem">Good Vibes, Great Roads, Unforgettable Memories! 🚗✨</p>
 </footer>
 
@@ -1370,6 +1379,10 @@
 </div>
 
 <script>
+// Always start at the top — prevent browser scroll restoration from mid-page
+history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
 const DAY_META = {
@@ -1465,7 +1478,7 @@ function buildGallery() {
                style="width:100%;display:block;border-radius:12px;min-height:150px;background:#111"></video>
         <div class="video-icon">▶</div>
         <div class="photo-overlay">
-          <div class="photo-meta">🎬 ${filename}<br>${meta.title}</div>
+          <div class="photo-meta">🎬 ${formatTime(filename)}<br>${meta.title}</div>
           <div class="photo-actions">
             <button class="photo-btn" onclick="openLightbox(${idx},event)">▶ Play</button>
             <button class="photo-btn" onclick="downloadFile('${filename}',event)">⬇ Save</button>
