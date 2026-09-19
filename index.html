@@ -1637,8 +1637,8 @@ function downloadFile(filename, e) {
 }
 
 function downloadDay(day) {
-  const files = FILE_LIST.filter(f => getDay(f) === day && isImage(f));
-  if (!files.length) { alert('No images found for this day.'); return; }
+  const files = FILE_LIST.filter(f => getDay(f) === day);
+  if (!files.length) { alert('No files found for this day.'); return; }
   files.forEach((f, i) => {
     setTimeout(() => {
       const a = document.createElement('a');
@@ -1648,9 +1648,8 @@ function downloadDay(day) {
 }
 
 function downloadAll() {
-  const files = FILE_LIST.filter(f => isImage(f));
-  if (confirm(`Download all ${files.length} photos? This will trigger ${files.length} downloads.`)) {
-    files.forEach((f, i) => {
+  if (confirm(`Download all ${FILE_LIST.length} photos & videos? This will trigger ${FILE_LIST.length} downloads.`)) {
+    FILE_LIST.forEach((f, i) => {
       setTimeout(() => {
         const a = document.createElement('a');
         a.href = f; a.download = f; a.click();
